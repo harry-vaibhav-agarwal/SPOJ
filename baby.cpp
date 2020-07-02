@@ -5,30 +5,26 @@ using namespace std;
 const int INF=1e9+7;
 int dist[17][17];
 int n;
-int dp[1<<17][17];
+int dp[1<<17];
 
 int assign(int mask,int pos)
 {
     
-    if(mask+1==(1<<n))
-        return dp[mask][pos]=0;
-        
     if(pos==n)
-        return dp[mask][pos]=INF;
+        return dp[mask]=0;
         
-    if(dp[mask][pos]!=-1)
-    {
-        //cout<<"MAsk"<<"\t"<<mask<<"\t"<<"POS"<<"\t"<<pos<<"\t"<<"VALUE"<<"\t"<<dp[mask][pos]<<"\n";
-        return dp[mask][pos];
-    }   
-    dp[mask][pos]=assign(mask,pos+1);
+        
+    if(dp[mask]!=-1)
+        return dp[mask];
+       
+    dp[mask]=INF;
     for(int i=0;i<n;i++){
         
-        if( ( mask & ( 1 <<  i) ) == 0)
-            dp[mask][pos]=min(dp[mask][pos],dist[i][pos]+assign(mask|(1<<i),pos+1));
+        if( ( mask & ( 1 <<  i) ) == 0)  //ithqueen has not been assigned a pos
+            dp[mask]=min(dp[mask],dist[i][pos]+assign(mask|(1<<i),pos+1));
     }
     
-    return dp[mask][pos];
+    return dp[mask];
 }
 
 
@@ -51,7 +47,7 @@ int main()
             for(int j=1;j<=n;j++)
                 dist[i-1][j-1]=abs(j-i)+abs(orig[i]-valid[j]);
         
-        memset(&dp,-1,sizeof(dp));     
+        memset(dp,-1,sizeof(dp));     
         pf(assign(0,0));
                 
     }
